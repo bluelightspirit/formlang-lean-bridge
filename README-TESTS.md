@@ -4,8 +4,8 @@ Copy the `tests/` directory and `pytest.ini` into the root of the bridge checkou
 
 The suite covers DFA/NFA acceptance against the exported manifest, nondeterministic
 branches, multiple start states, empty words, missing transitions, Unicode symbols,
-unusual state names, unknown test symbols, epsilon rejection, JSON sidecar output,
-bounded determinization/minimization checks, seeded randomized differential checks,
+unusual state names, unknown test symbols, epsilon-NFA closure (including chains and cycles),
+JSON sidecar output, bounded determinization/minimization checks, seeded randomized differential checks,
 and optional Lean/PyPantograph integration.
 
 Run the normal suite with `pytest -v`.

@@ -4,14 +4,14 @@ A starter Python package connecting **Pyformlang** automata with **Lean 4**.
 It exports finite automata to executable Lean definitions and can optionally
 use **PyPantograph** to interact with Lean goals.
 
-## Scope in 0.1.0
+## Scope in 0.2.0
 
 ### Implemented
 
-- DFA and NFA export from Pyformlang to self-contained Lean 4 definitions.
+- DFA, NFA, and EpsilonNFA export from Pyformlang to self-contained Lean 4 definitions.
 - Explicit integer encodings for states and alphabet symbols, with a JSON manifest mapping exported identifiers back to their original values.
 - Support for multiple initial states and nondeterministic transitions.
-- Executable Lean acceptance semantics for DFAs and NFAs.
+- Executable Lean acceptance semantics for DFAs, NFAs, and epsilon-NFAs, including epsilon closure.
 - Optional concrete acceptance checks generated as Lean `by decide` examples.
 - Optional PyPantograph integration for loading definitions, inspecting declarations, and submitting propositions to Lean.
 - Python/Lean differential tests and edge-case tests for exported automata.
@@ -37,7 +37,6 @@ The formal acceptance-preservation result is narrower than a general proof of co
 
 ### Not implemented or not yet formally verified
 
-- Epsilon-transition export. Epsilon transitions are explicitly rejected.
 - FST (finite-state transducer), CFG (context-free grammar), and PDA (pushdown automaton) export.
 - A general formal proof that the Python exporter preserves the language of every supported Pyformlang automaton.
 - A general Lean proof of minimization correctness.
@@ -47,13 +46,12 @@ The formal acceptance-preservation result is narrower than a general proof of co
 
 The test suite covers Python export, Lean compilation, acceptance semantics, edge cases, differential testing, transformations, and optional PyPantograph integration.
 
-The latest full test run completed with **24 passing tests**, including the configured PyPantograph and actual Lean compiler checks.
+The latest full test run completed with **26 passing tests**, including the configured PyPantograph and actual Lean compiler checks.
 
 Lean and PyPantograph tests require their respective external tools and a configured Lean project.
 
-Not implemented yet: epsilon-transition export, FST/CFG/PDA export, a general
-proof that the Python and Lean automata denote the same language, or verified
-determinization/minimization. Epsilon transitions are rejected explicitly.
+Not implemented yet: FST/CFG/PDA export, a general proof that the Python
+and Lean automata denote the same language, or verified determinization/minimization.
 
 ## Install
 

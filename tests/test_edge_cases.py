@@ -1,6 +1,6 @@
 import json
 import pytest
-from pyformlang.finite_automaton import EpsilonNFA, NondeterministicFiniteAutomaton
+from pyformlang.finite_automaton import EpsilonNFA, Epsilon, NondeterministicFiniteAutomaton
 from formlang_lean_bridge import export_automaton
 
 
@@ -65,13 +65,18 @@ def test_unknown_test_symbol_raises():
         export_automaton(nfa, "Unknown", [["missing"]])
 
 
-def test_epsilon_edges_rejected():
+def test_epsilon_edges_are_exported_separately():
     enfa = EpsilonNFA()
-    enfa.add_transition("s", "epsilon", "f")
+    enfa.add_transition("s", Epsilon(), "f")
     enfa.add_start_state("s")
     enfa.add_final_state("f")
-    with pytest.raises(NotImplementedError, match="Epsilon transitions"):
-        export_automaton(enfa, "EpsilonRejected")
+
+    artifact = export_automaton(enfa, "EpsilonExport", [[]])
+
+    assert len(artifact.manifest["epsilon_transitions"]) == 1
+    assert artifact.manifest["transitions"] == []
+    assert "def epsilonClosure" in artifact.source
+    assert "accepts [] = true" in artifact.source
 
 
 def test_manifest_sidecar_written(tmp_path):
@@ -81,4 +86,4 @@ def test_manifest_sidecar_written(tmp_path):
     nfa.add_final_state("f")
     target = export_automaton(nfa, "WriteTest").write(tmp_path / "A.lean")
     data = json.loads(target.with_suffix(".lean.json").read_text(encoding="utf-8"))
-    assert data["format"] == "formlang-lean-bridge/0.1.0"
+    assert data["format"] == "formlang-lean-bridge/0.2.0"

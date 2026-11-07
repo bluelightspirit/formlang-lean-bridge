@@ -2,7 +2,11 @@ import os
 import shutil
 import subprocess
 import pytest
-from pyformlang.finite_automaton import NondeterministicFiniteAutomaton
+from pyformlang.finite_automaton import (
+    NondeterministicFiniteAutomaton,
+    EpsilonNFA,
+    Epsilon,
+)
 from formlang_lean_bridge import export_automaton
 
 
@@ -11,7 +15,9 @@ def test_generated_lean_module_compiles(tmp_path):
     lake = shutil.which("lake")
     project = os.environ.get("LEAN_PROJECT_PATH")
     if not lake or not project:
-        pytest.skip("Requires `lake` on PATH and LEAN_PROJECT_PATH pointing to a Lean project")
+        pytest.skip(
+            "Requires `lake` on PATH and LEAN_PROJECT_PATH pointing to a Lean project"
+        )
     nfa = NondeterministicFiniteAutomaton()
     nfa.add_transition("s", "a", "f")
     nfa.add_start_state("s")
@@ -25,3 +31,36 @@ def test_generated_lean_module_compiles(tmp_path):
     )
     assert result.returncode == 0, result.stdout + result.stderr
 
+
+@pytest.mark.lean
+def test_generated_epsilon_nfa_lean_module_compiles(tmp_path):
+    lake = shutil.which("lake")
+    project = os.environ.get("LEAN_PROJECT_PATH")
+    if not lake or not project:
+        pytest.skip("Requires `lake` on PATH and LEAN_PROJECT_PATH pointing to a Lean project")
+
+    enfa = EpsilonNFA()
+    enfa.add_transitions([
+        ("s", Epsilon(), "p"),
+        ("p", "a", "f"),
+        ("f", Epsilon(), "p"),
+    ])
+    enfa.add_start_state("s")
+    enfa.add_final_state("f")
+
+    artifact = export_automaton(
+        enfa,
+        "BridgeEpsilonCompile",
+        [[], ["a"], ["a", "a"]],
+    )
+    lean_file = tmp_path / "BridgeEpsilonCompile.lean"
+    lean_file.write_text(artifact.source, encoding="utf-8")
+
+    result = subprocess.run(
+        [lake, "env", "lean", str(lean_file)],
+        cwd=project,
+        capture_output=True,
+        text=True,
+        timeout=120,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr

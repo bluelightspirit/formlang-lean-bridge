@@ -56,7 +56,7 @@ def test_seeded_random_nfas_are_verified_by_lean(tmp_path):
         module = artifact.source.replace("import Std\n", "", 1)
         modules.append(module)
 
-    lean_source = "import Std\n\n" + "\n".join(modules)
+    lean_source = "import Std\nset_option maxRecDepth 10000\n\n" + "\n".join(modules)
     lean_file = tmp_path / "RandomDifferential.lean"
     lean_file.write_text(lean_source, encoding="utf-8")
 
