@@ -6,12 +6,50 @@ use **PyPantograph** to interact with Lean goals.
 
 ## Scope in 0.1.0
 
-- DFA/NFA export to a self-contained Lean 4 module.
-- Explicit integer encodings for states and alphabet symbols, with a JSON manifest.
-- Multiple initial states and nondeterministic transitions.
-- Executable acceptance semantics.
+### Implemented
+
+- DFA and NFA export from Pyformlang to self-contained Lean 4 definitions.
+- Explicit integer encodings for states and alphabet symbols, with a JSON manifest mapping exported identifiers back to their original values.
+- Support for multiple initial states and nondeterministic transitions.
+- Executable Lean acceptance semantics for DFAs and NFAs.
 - Optional concrete acceptance checks generated as Lean `by decide` examples.
-- Optional PyPantograph adapter for submitting propositions to Lean.
+- Optional PyPantograph integration for loading definitions, inspecting declarations, and submitting propositions to Lean.
+- Python/Lean differential tests and edge-case tests for exported automata.
+- Python-side determinization and minimization, with bounded transformation and equivalence tests.
+
+### Formal verification
+
+The Lean formalization includes:
+
+- NFA and DFA definitions and executable acceptance semantics.
+- Subset construction and a finite canonical subset-DFA construction.
+- A well-formedness predicate for NFAs.
+- A proved acceptance-preservation theorem:
+
+  `FormalAutomata.finite_subset_acceptance_preserved`
+
+  This establishes that the finite subset DFA accepts the same words as its source NFA, provided the NFA is well-formed and the input word uses symbols from its declared alphabet.
+
+- A concrete finite subset-construction example checked using the Lean compiler.
+- Compiler-level checks for unfinished proofs (`sorryAx`) in the concrete theorem.
+
+The formal acceptance-preservation result is narrower than a general proof of correctness for the entire Python-to-Lean export pipeline. The Lean theorem does not establish correctness for arbitrary Pyformlang objects or all possible exporter inputs.
+
+### Not implemented or not yet formally verified
+
+- Epsilon-transition export. Epsilon transitions are explicitly rejected.
+- FST (finite-state transducer), CFG (context-free grammar), and PDA (pushdown automaton) export.
+- A general formal proof that the Python exporter preserves the language of every supported Pyformlang automaton.
+- A general Lean proof of minimization correctness.
+- Formal equivalence proofs for every Python-side transformation and every possible input.
+
+### Testing
+
+The test suite covers Python export, Lean compilation, acceptance semantics, edge cases, differential testing, transformations, and optional PyPantograph integration.
+
+The latest full test run completed with **24 passing tests**, including the configured PyPantograph and actual Lean compiler checks.
+
+Lean and PyPantograph tests require their respective external tools and a configured Lean project.
 
 Not implemented yet: epsilon-transition export, FST/CFG/PDA export, a general
 proof that the Python and Lean automata denote the same language, or verified
