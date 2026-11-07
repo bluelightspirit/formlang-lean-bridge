@@ -42,6 +42,12 @@ The formal acceptance-preservation result is narrower than a general proof of co
 - A general Lean proof of minimization correctness.
 - Formal equivalence proofs for every Python-side transformation and every possible input.
 
+### Note for AI usage
+
+For transparency purposes, the bulk of this has been vibecoded by ChatGPT. If you find any issues, feel free to make a pull request or issue. 
+
+I do declare this as vibecoded instead of just "Permissive AI Policy" per https://codeberg.org/ethical-foss/ai-free-foss-alternatives#vibecoded since I have pretty much blindly told ChatGPT to bridge Pyformlang and PyPantograph together while asking it to make proofs to test if the gaps are bridged.
+
 ### Testing
 
 The test suite covers Python export, Lean compilation, acceptance semantics, edge cases, differential testing, transformations, and optional PyPantograph integration.
