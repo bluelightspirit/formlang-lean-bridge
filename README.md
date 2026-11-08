@@ -4,6 +4,10 @@ A starter Python package connecting **Pyformlang** automata with **Lean 4**.
 It exports finite automata to executable Lean definitions and can optionally
 use **PyPantograph** to interact with Lean goals.
 
+## Note
+
+This is very time consuming for some phases to bridge together through ChatGPT sed'ing and Python inserting constantly, so this only is going to cover DFAs/NFAs unless someone wants to make a PR with more options like regex/CFGs/PDAs/turing machines/FSTs/etc.
+
 ## Scope in 0.2.0
 
 ### Implemented
